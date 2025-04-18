@@ -183,29 +183,29 @@ require 'db_connect.php';
   </div>
 
   <script>
-    // Handle goal completion and deletion with animation
+    
     document.querySelectorAll('.goal-checkbox').forEach(box => {
       box.addEventListener('change', function () {
         const goalDiv = this.closest('.goal-item');
         const goalId = goalDiv.dataset.goalId;
 
-        // Show "fill" animation on goal completion
+       
         if (this.checked) {
           const fillElement = goalDiv.querySelector('.goal-fill');
-          fillElement.style.width = '100%';  // Trigger the fill animation
+          fillElement.style.width = '100%'; 
           setTimeout(() => {
-            showPopup(goalDiv.querySelector('span').innerText); // Show popup after fill animation
-          }, 2000); // Wait for 2s animation to complete
+            showPopup(goalDiv.querySelector('span').innerText); 
+          }, 1000);
         }
 
-        // Delete goal from database and view
+       
         fetch('delete_task.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ task_id: goalId })
         });
 
-        // Remove goal with fade-out and animation
+       
         goalDiv.classList.add('completed');
         setTimeout(() => {
           goalDiv.remove();
@@ -214,20 +214,20 @@ require 'db_connect.php';
       });
     });
 
-    // Handle task deletion (no popup)
+   
     document.querySelectorAll('.task-checkbox').forEach(box => {
       box.addEventListener('change', function () {
         const taskDiv = this.closest('.task-item');
         const taskId = taskDiv.dataset.taskId;
 
-        // Delete task from database and view
+       
         fetch('delete_task.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ task_id: taskId })
         });
 
-        // Remove task with fade-out animation
+       
         taskDiv.classList.add('completed');
         setTimeout(() => {
           taskDiv.remove();
@@ -235,7 +235,7 @@ require 'db_connect.php';
       });
     });
 
-    // Show the congratulations popup
+   
     function showPopup(taskName) {
       const popup = document.getElementById('popup');
       const content = document.getElementById('popup-content');
@@ -243,7 +243,7 @@ require 'db_connect.php';
       popup.style.display = 'flex';
     }
 
-    // Close the popup when clicked outside
+   
     document.getElementById('popup').addEventListener('click', function (e) {
       if (e.target.id === 'popup') {
         this.style.display = 'none';
