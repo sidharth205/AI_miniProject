@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $task_id = $stmt->insert_id;
     $stmt->close();
 
-    
+   
     if ($has_dependencies) {
         foreach ($_POST['dependencies'] as $dep_name) {
             $dep_id = null;
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $dep_insert_stmt->close();
             }
 
-           
+            // Avoid duplicate dependencies
             $check_dep_stmt = $conn->prepare("SELECT 1 FROM task_dependencies WHERE task_id = ? AND dependency_id = ?");
             $check_dep_stmt->bind_param("ii", $task_id, $dep_id);
             $check_dep_stmt->execute();
@@ -184,6 +184,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 .trash-btn:hover {
     transform: scale(1.2);
 }
+.header {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    color: #2c2c2c;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: 700;
+    color: #4f46e5;
+    letter-spacing: 1px;
+}
+
+.subtext {
+    font-size: 1rem;
+    color: #555;
+    max-width: 600px;
+    margin: 10px auto 20px;
+    line-height: 1.5;
+}
+
 
     </style>
    <script>
@@ -251,6 +274,14 @@ window.onload = checkGoal;
 </head>
 
 <body>
+<div class="header">
+    <h1>🧠 Planning Companion</h1>
+    <p class="subtext">
+        Your personalized task manager powered by <strong>Forward and Backward Chaining</strong>.  
+        Organize your goals, define dependencies, and achieve more with clarity.
+    </p>
+</div>
+
     <div class="container">
         <h2>Add New Task</h2>
         <form action="index.php" method="POST" onsubmit="validateForm(event)">
