@@ -1,26 +1,26 @@
 <?php 
 require 'db_connect.php';
 
-// Initialize a success message variable
+
 $successMessage = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $task_name = $_POST['task_name'];
     $is_goal = isset($_POST['is_goal']) ? 1 : 0;
     $has_dependencies = isset($_POST['dependencies']) && !empty($_POST['dependencies']);
 
-    // Insert the main task
+   
     $stmt = $conn->prepare("INSERT INTO tasks (task_name, is_goal) VALUES (?, ?)");
     $stmt->bind_param("si", $task_name, $is_goal);
     $stmt->execute();
     $task_id = $stmt->insert_id;
     $stmt->close();
 
-    // Insert Dependencies if any
+    
     if ($has_dependencies) {
         foreach ($_POST['dependencies'] as $dep_name) {
             $dep_id = null;
 
-            // Check if dependency already exists
+           
             $dep_stmt = $conn->prepare("SELECT task_id FROM tasks WHERE task_name = ?");
             $dep_stmt->bind_param("s", $dep_name);
             $dep_stmt->execute();
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $dep_stmt->close();
 
             if (!$dep_id) {
-                $dep_goal = 0; // Dependencies are never goals by default
+                $dep_goal = 0; 
                 $dep_insert_stmt = $conn->prepare("INSERT INTO tasks (task_name, is_goal) VALUES (?, ?)");
                 $dep_insert_stmt->bind_param("si", $dep_name, $dep_goal);
                 $dep_insert_stmt->execute();
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $dep_insert_stmt->close();
             }
 
-            // Avoid duplicate dependencies
+           
             $check_dep_stmt = $conn->prepare("SELECT 1 FROM task_dependencies WHERE task_id = ? AND dependency_id = ?");
             $check_dep_stmt->bind_param("ii", $task_id, $dep_id);
             $check_dep_stmt->execute();
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Success message
+   
     $successMessage = "Task Added Successfully!";
 }
 
